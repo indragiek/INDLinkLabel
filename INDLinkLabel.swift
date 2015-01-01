@@ -86,7 +86,6 @@ public class INDLinkLabel: UIView {
     private struct LinkRange {
         let URL: NSURL
         let glyphRange: NSRange
-        let rects: [CGRect]
     }
     
     private var linkRanges: [LinkRange]?
@@ -179,14 +178,6 @@ public class INDLinkLabel: UIView {
         invalidateIntrinsicContentSize()
     }
     
-    private func rectsForGlyphRange(range: NSRange) -> [CGRect] {
-        var rects = [CGRect]()
-        self.layoutManager.enumerateEnclosingRectsForGlyphRange(range, withinSelectedGlyphRange: NSRange(location: NSNotFound, length: 0), inTextContainer: self.textContainer) { (rect, _) in
-            rects.append(rect)
-        }
-        return rects
-    }
-    
     private func cacheLinkRanges() {
         var ranges = [LinkRange]()
         textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: nil) { (value, range, _) in
@@ -202,8 +193,7 @@ public class INDLinkLabel: UIView {
             }()
             if let URL = URL {
                 let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
-                let rects = self.rectsForGlyphRange(glyphRange)
-                ranges.append(LinkRange(URL: URL, glyphRange: glyphRange, rects: rects))
+                ranges.append(LinkRange(URL: URL, glyphRange: glyphRange))
             }
         }
         linkRanges = ranges
