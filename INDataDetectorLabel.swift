@@ -164,6 +164,7 @@ public class INDataDetectorLabel: UIView {
     public override func drawRect(rect: CGRect) {
         textContainer.size = bounds.size
         let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
+        layoutManager.drawBackgroundForGlyphRange(glyphRange, atPoint: bounds.origin)
         layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: bounds.origin)
     }
 }
