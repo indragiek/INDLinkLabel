@@ -362,7 +362,6 @@ import UIKit
     }
     
     public override func intrinsicContentSize() -> CGSize {
-        println(preferredMaxLayoutWidth)
         return calculateContentSizeForWidth(preferredMaxLayoutWidth)
     }
     
