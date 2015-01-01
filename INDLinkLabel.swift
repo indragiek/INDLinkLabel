@@ -21,11 +21,17 @@ public class INDLinkLabel: UIView {
         }
     }
     
+    private var _attributedText: NSAttributedString?
     public var attributedText: NSAttributedString? {
-        didSet {
+        get {
+            return _attributedText
+        }
+        set {
             if let attributedText = attributedText {
+                _attributedText = attributedText
                 setAttributedString(attributedText)
             } else {
+                _attributedText = nil
                 clear()
             }
         }
@@ -165,6 +171,8 @@ public class INDLinkLabel: UIView {
         applyAttributeWithKey(NSForegroundColorAttributeName, value: textColor)
         applyAttributeWithKey(NSParagraphStyleAttributeName, value: paragraphStyle)
         applyAttributeWithKey(NSShadowAttributeName, value: shadow)
+        
+        _attributedText = textStorage.copy() as? NSAttributedString
     }
     
     private func setAttributedString(attrString: NSAttributedString) {
