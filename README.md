@@ -1,7 +1,7 @@
 ## INDLinkLabel
 ### A simple, no frills `UILabel`-alike with support for links
 
-All I wanted was a label that was exactly like `UILabel`, except with support for handling taps on links. I didn't want a loads of additional styling properties or built in support for parsing links and hashtags. I just wanted to be able to give it an `NSAttributedString` that had links already marked using `NSLinkAttributeName` and have it handle taps on those links like the way `UITextView` does. I couldn't find an existing project that met that critiera so I built this.
+All I wanted was a label that was exactly like `UILabel`, except with support for handling taps on links. I didn't want loads of additional styling properties or built in support for parsing links and hashtags. I just wanted to be able to give it an `NSAttributedString` that had links already marked using `NSLinkAttributeName` and have it handle taps on those links like the way `UITextView` does. I couldn't find an existing project that met that criteria so I built this.
 
 Run the example app to see it in action:
 
