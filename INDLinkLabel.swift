@@ -244,14 +244,6 @@ public class INDLinkLabel: UIView {
         return rects
     }
     
-    private func enclosingRectsForGlyphRange(range: NSRange) -> [CGRect] {
-        var rects = [CGRect]()
-        layoutManager.enumerateEnclosingRectsForGlyphRange(range, withinSelectedGlyphRange: NSRange(location: NSNotFound, length: 0), inTextContainer: textContainer) { (rect, _) in
-            rects.append(rect)
-        }
-        return rects
-    }
-    
     // MARK: Layout
     
     private var contentSize: CGSize {
