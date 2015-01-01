@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    @IBOutlet var label: INDataDetectorLabel!
+    @IBOutlet var label: INDLinkLabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()

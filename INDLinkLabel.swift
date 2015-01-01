@@ -1,5 +1,5 @@
 //
-//  INDataDetectorLabel.swift
+//  INDLinkLabel.swift
 //  Example
 //
 //  Created by Indragie on 12/31/14.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class INDataDetectorLabel: UIView {
+public class INDLinkLabel: UIView {
     // MARK: Text Attributes
     
     public var text: NSString? {

@@ -13,7 +13,7 @@
 		72A5FB761A551D6600D8A440 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 72A5FB741A551D6600D8A440 /* Main.storyboard */; };
 		72A5FB781A551D6600D8A440 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72A5FB771A551D6600D8A440 /* Images.xcassets */; };
 		72A5FB7B1A551D6600D8A440 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 72A5FB791A551D6600D8A440 /* LaunchScreen.xib */; };
-		72A5FB941A551E0400D8A440 /* INDataDetectorLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A5FB931A551E0400D8A440 /* INDataDetectorLabel.swift */; };
+		72A5FB941A551E0400D8A440 /* INDLinkLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A5FB931A551E0400D8A440 /* INDLinkLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,7 +25,7 @@
 		72A5FB751A551D6600D8A440 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		72A5FB771A551D6600D8A440 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		72A5FB7A1A551D6600D8A440 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		72A5FB931A551E0400D8A440 /* INDataDetectorLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = INDataDetectorLabel.swift; path = ../../INDataDetectorLabel.swift; sourceTree = "<group>"; };
+		72A5FB931A551E0400D8A440 /* INDLinkLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = INDLinkLabel.swift; path = ../../INDLinkLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,7 +68,7 @@
 			children = (
 				72A5FB701A551D6600D8A440 /* AppDelegate.swift */,
 				72A5FB721A551D6600D8A440 /* ViewController.swift */,
-				72A5FB931A551E0400D8A440 /* INDataDetectorLabel.swift */,
+				72A5FB931A551E0400D8A440 /* INDLinkLabel.swift */,
 				72A5FB741A551D6600D8A440 /* Main.storyboard */,
 				72A5FB771A551D6600D8A440 /* Images.xcassets */,
 				72A5FB791A551D6600D8A440 /* LaunchScreen.xib */,
@@ -159,7 +159,7 @@
 			files = (
 				72A5FB731A551D6600D8A440 /* ViewController.swift in Sources */,
 				72A5FB711A551D6600D8A440 /* AppDelegate.swift in Sources */,
-				72A5FB941A551E0400D8A440 /* INDataDetectorLabel.swift in Sources */,
+				72A5FB941A551E0400D8A440 /* INDLinkLabel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
