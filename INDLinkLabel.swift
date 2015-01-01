@@ -80,6 +80,12 @@ public class INDLinkLabel: UIView {
         }
     }
     
+    // MARK: Tap Handling
+    
+    public typealias LinkHandler = NSURL -> Void
+    public var linkTapHandler: LinkHandler?
+    public var linkLongPressHandler: LinkHandler?
+    
     // MARK: Private
     
     private var layoutManager: NSLayoutManager!
@@ -111,6 +117,7 @@ public class INDLinkLabel: UIView {
         contentMode = .Redraw
         
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: Selector("handleTap:")))
+        addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: Selector("handleLongPress:")))
     }
     
     override init(frame: CGRect) {
@@ -284,6 +291,21 @@ public class INDLinkLabel: UIView {
     }
     
     @objc private func handleTap(gestureRecognizer: UIGestureRecognizer) {
+        if let linkRange = tappedLinkRange {
+            if let handler = linkTapHandler {
+                handler(linkRange.URL)
+            } else {
+                UIApplication.sharedApplication().openURL(linkRange.URL)
+            }
+        }
+    }
+    
+    @objc private func handleLongPress(gestureRecognizer: UIGestureRecognizer) {
+        if let linkRange = tappedLinkRange {
+            if let handler = linkLongPressHandler {
+                handler(linkRange.URL)
+            }
+        }
     }
 }
 
