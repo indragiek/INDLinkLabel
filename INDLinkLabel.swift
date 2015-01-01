@@ -1,6 +1,6 @@
 //
 //  INDLinkLabel.swift
-//  Example
+//  INDLinkLabel
 //
 //  Created by Indragie on 12/31/14.
 //  Copyright (c) 2014 Indragie Karunaratne. All rights reserved.
@@ -8,9 +8,20 @@
 
 import UIKit
 
+/// A simple label class that is similar to UILabel but allows for 
+/// tapping on links (i.e. anything marked with `NSLinkAttributeName`)
+///
+/// This is not a drop-in replacement for UILabel, as it does not 
+/// implement functionality like font size adjustment, but most of the 
+/// commonly used properties are implemented.
 public class INDLinkLabel: UIView {
     // MARK: Text Attributes
     
+    /// The text displayed by the label.
+    ///
+    /// Changing this property will also change the value of `attributedText`,
+    /// which will contain an attributed version of `text` with attributes
+    /// applied based on the style-related properties below.
     public var text: String? {
         get { return _text }
         set {
@@ -24,6 +35,11 @@ public class INDLinkLabel: UIView {
     }
     private var _text: String?
     
+    /// The styled text displayed by the label.
+    ///
+    /// Changing this property will also change the value of `text`, as well
+    /// as the values of all of the style-related properties, which will be
+    /// set based on the attributes present in this string at index 0.
     public var attributedText: NSAttributedString? {
         get { return _attributedText }
         set {
@@ -44,6 +60,9 @@ public class INDLinkLabel: UIView {
         static var lineBreakMode = NSLineBreakMode.ByTruncatingTail
     }
     
+    /// The font of the text.
+    ///
+    /// This value is applied to the entirety of the string.
     public var font: UIFont {
         get { return _font }
         set {
@@ -53,6 +72,9 @@ public class INDLinkLabel: UIView {
     }
     private var _font = Defaults.font
     
+    /// The color of the text.
+    ///
+    /// This value is applied to the entirety of the string.
     public var textColor: UIColor {
         get { return _textColor }
         set {
@@ -62,6 +84,9 @@ public class INDLinkLabel: UIView {
     }
     private var _textColor = Defaults.textColor
     
+    /// The alignment of the text.
+    ///
+    /// This value is applied to the entirety of the string.
     public var textAlignment: NSTextAlignment {
         get { return _textAlignment }
         set {
@@ -71,6 +96,9 @@ public class INDLinkLabel: UIView {
     }
     private var _textAlignment = Defaults.textAlignment
     
+    /// The line break mode of the text.
+    ///
+    /// This value is applied to the entirety of the string.
     public var lineBreakMode: NSLineBreakMode {
         get { return _lineBreakMode }
         set {
@@ -88,6 +116,9 @@ public class INDLinkLabel: UIView {
         return style
     }
     
+    /// The shadow color of the text.
+    ///
+    /// This value is applied to the entirety of the string.
     public var shadowColor: UIColor? {
         get { return _shadowColor }
         set {
@@ -97,6 +128,10 @@ public class INDLinkLabel: UIView {
     }
     private var _shadowColor: UIColor?
     
+    
+    /// The shadow offset of the text.
+    ///
+    /// This value is applied to the entirety of the string.
     public var shadowOffset: CGSize? {
         get { return _shadowOffset }
         set {
@@ -118,7 +153,11 @@ public class INDLinkLabel: UIView {
         return nil
     }
     
+    /// The color of the highlight that appears over a link when tapping on it
     public var linkHighlightColor: UIColor = UIColor(white: 0, alpha: 0.2)
+    
+    /// The corner radius of the highlight that appears over a link when 
+    /// tapping on it
     public var linkHighlightCornerRadius: CGFloat = 2
     
     // MARK: Text Layout
@@ -133,7 +172,16 @@ public class INDLinkLabel: UIView {
     // MARK: Tap Handling
     
     public typealias LinkHandler = NSURL -> Void
+    
+    /// Called when a link is tapped.
+    ///
+    /// If no handler is provided, the link will be opened using 
+    /// `UIApplication.openURL()`
     public var linkTapHandler: LinkHandler?
+    
+    /// Called when a link is long pressed.
+    ///
+    /// If no handler is provided, nothing will happen on logn press.
     public var linkLongPressHandler: LinkHandler?
     
     // MARK: Private
