@@ -21,7 +21,6 @@ public class INDLinkLabel: UIView {
         }
     }
     
-    private var _attributedText: NSAttributedString?
     public var attributedText: NSAttributedString? {
         get {
             return _attributedText
@@ -36,42 +35,87 @@ public class INDLinkLabel: UIView {
             }
         }
     }
+    private var _attributedText: NSAttributedString?
     
-    public var font: UIFont = UIFont.systemFontOfSize(17) {
-        didSet {
-            applyAttributeWithKey(NSFontAttributeName, value: font)
-        }
+    private struct Defaults {
+        static var font = UIFont.systemFontOfSize(17)
+        static var textColor = UIColor.blackColor()
+        static var textAlignment = NSTextAlignment.Left
+        static var lineBreakMode = NSLineBreakMode.ByTruncatingTail
     }
     
-    public var textColor: UIColor = UIColor.blackColor() {
-        didSet {
-            applyAttributeWithKey(NSForegroundColorAttributeName, value: textColor)
+    public var font: UIFont {
+        get { return _font }
+        set {
+            _font = newValue
+            applyAttributeWithKey(NSFontAttributeName, value: _font)
         }
     }
+    private var _font = Defaults.font
     
-    public var textAlignment: NSTextAlignment = .Left {
-        didSet {
-            applyAttributeWithKey(NSParagraphStyleAttributeName, value: paragraphStyle)
+    public var textColor: UIColor {
+        get { return _textColor }
+        set {
+            _textColor = newValue
+            applyAttributeWithKey(NSForegroundColorAttributeName, value: _textColor)
         }
     }
+    private var _textColor = Defaults.textColor
     
-    public var lineBreakMode: NSLineBreakMode = .ByTruncatingTail {
-        didSet {
-            textContainer.lineBreakMode = lineBreakMode
-            applyAttributeWithKey(NSParagraphStyleAttributeName, value: paragraphStyle)
+    public var textAlignment: NSTextAlignment {
+        get { return _textAlignment }
+        set {
+            _textAlignment = newValue
+            applyAttributeWithKey(NSParagraphStyleAttributeName, value: _paragraphStyle)
         }
+    }
+    private var _textAlignment = Defaults.textAlignment
+    
+    public var lineBreakMode: NSLineBreakMode {
+        get { return _lineBreakMode }
+        set {
+            _lineBreakMode = newValue
+            textContainer.lineBreakMode = _lineBreakMode
+            applyAttributeWithKey(NSParagraphStyleAttributeName, value: _paragraphStyle)
+        }
+    }
+    private var _lineBreakMode = Defaults.lineBreakMode
+    
+    private var _paragraphStyle: NSParagraphStyle {
+        let style = NSMutableParagraphStyle()
+        style.alignment = _textAlignment
+        style.lineBreakMode = _lineBreakMode
+        return style
     }
     
     public var shadowColor: UIColor? {
-        didSet {
-            applyAttributeWithKey(NSShadowAttributeName, value: shadow)
+        get { return _shadowColor }
+        set {
+            _shadowColor = newValue
+            applyAttributeWithKey(NSShadowAttributeName, value: _shadow)
         }
     }
+    private var _shadowColor: UIColor?
     
     public var shadowOffset: CGSize? {
-        didSet {
-            applyAttributeWithKey(NSShadowAttributeName, value: shadow)
+        get { return _shadowOffset }
+        set {
+            _shadowOffset = newValue
+            applyAttributeWithKey(NSShadowAttributeName, value: _shadow)
         }
+    }
+    private var _shadowOffset: CGSize?
+    
+    private var _shadow: NSShadow? {
+        if let color = _shadowColor {
+            let shadow = NSShadow()
+            shadow.shadowColor = color
+            if let offset = _shadowOffset {
+                shadow.shadowOffset = offset
+            }
+            return shadow
+        }
+        return nil
     }
     
     public var linkHighlightColor: UIColor = UIColor(white: 0, alpha: 0.2)
@@ -138,25 +182,6 @@ public class INDLinkLabel: UIView {
     
     // MARK: Applying Attributes
     
-    private var paragraphStyle: NSParagraphStyle {
-        let style = NSMutableParagraphStyle()
-        style.alignment = textAlignment
-        style.lineBreakMode = lineBreakMode
-        return style
-    }
-    
-    private var shadow: NSShadow? {
-        if let color = shadowColor {
-            let shadow = NSShadow()
-            shadow.shadowColor = color
-            if let offset = shadowOffset {
-                shadow.shadowOffset = offset
-            }
-            return shadow
-        }
-        return nil
-    }
-    
     private func clear() {
         textStorage.deleteCharactersInRange(NSRange(location: 0, length: textStorage.length))
         invalidateDisplayAndLayout()
@@ -167,9 +192,9 @@ public class INDLinkLabel: UIView {
         textStorage.mutableString.setString(string)
         cacheLinkRanges()
         
-        applyAttributeWithKey(NSFontAttributeName, value: font)
-        applyAttributeWithKey(NSForegroundColorAttributeName, value: textColor)
-        applyAttributeWithKey(NSParagraphStyleAttributeName, value: paragraphStyle)
+        applyAttributeWithKey(NSFontAttributeName, value: _font)
+        applyAttributeWithKey(NSForegroundColorAttributeName, value: _textColor)
+        applyAttributeWithKey(NSParagraphStyleAttributeName, value: _paragraphStyle)
         applyAttributeWithKey(NSShadowAttributeName, value: shadow)
         
         _attributedText = textStorage.copy() as? NSAttributedString
@@ -179,6 +204,18 @@ public class INDLinkLabel: UIView {
         textStorage.setAttributedString(attrString)
         cacheLinkRanges()
         invalidateDisplayAndLayout()
+        
+        let attributes = attrString.attributesAtIndex(0, effectiveRange: nil)
+        _font = (attributes[NSFontAttributeName] as? UIFont) ?? Defaults.font
+        _textColor = (attributes[NSFontAttributeName] as? UIColor) ?? Defaults.textColor
+        
+        let paragraphStyle = attributes[NSParagraphStyleAttributeName] as? NSParagraphStyle
+        _textAlignment = paragraphStyle?.alignment ?? Defaults.textAlignment
+        _lineBreakMode = paragraphStyle?.lineBreakMode ?? Defaults.lineBreakMode
+        
+        let shadow = attributes[NSShadowAttributeName] as? NSShadow
+        _shadowColor = shadow?.shadowColor as? UIColor
+        _shadowOffset = shadow?.shadowOffset
     }
     
     private func applyAttributeWithKey(key: String, value: AnyObject?) {
