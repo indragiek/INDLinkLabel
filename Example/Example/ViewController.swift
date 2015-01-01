@@ -17,8 +17,13 @@ class ViewController: UIViewController {
         let RTFPath = NSBundle.mainBundle().pathForResource("text", ofType: "rtf")!
         let RTFData = NSData(contentsOfFile: RTFPath)!
         let options = [NSDocumentTypeDocumentAttribute: NSRTFTextDocumentType]
+        
         label.numberOfLines = 0
         label.attributedText = NSAttributedString(data: RTFData, options: options, documentAttributes: nil, error: nil)
+        label.linkLongPressHandler = { URL in
+            let activityController = UIActivityViewController(activityItems: [URL], applicationActivities: nil)
+            self.presentViewController(activityController, animated: true, completion: nil)
+        }
     }
 }
 
