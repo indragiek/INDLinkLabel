@@ -31,7 +31,7 @@ import UIKit
 /// This is not a drop-in replacement for UILabel, as it does not 
 /// implement functionality like font size adjustment, but most of the 
 /// commonly used properties are implemented.
-public class INDLinkLabel: UIView {
+@IBDesignable public class INDLinkLabel: UIView {
     // MARK: Text Attributes
     
     /// The text displayed by the label.
@@ -39,7 +39,7 @@ public class INDLinkLabel: UIView {
     /// Changing this property will also change the value of `attributedText`,
     /// which will contain an attributed version of `text` with attributes
     /// applied based on the style-related properties below.
-    public var text: String? {
+    @IBInspectable public var text: String? {
         get { return _text }
         set {
             _text = newValue
@@ -92,7 +92,7 @@ public class INDLinkLabel: UIView {
     /// The color of the text.
     ///
     /// This value is applied to the entirety of the string.
-    public var textColor: UIColor {
+    @IBInspectable public var textColor: UIColor {
         get { return _textColor }
         set {
             _textColor = newValue
@@ -136,7 +136,7 @@ public class INDLinkLabel: UIView {
     /// The shadow color of the text.
     ///
     /// This value is applied to the entirety of the string.
-    public var shadowColor: UIColor? {
+    @IBInspectable public var shadowColor: UIColor? {
         get { return _shadowColor }
         set {
             _shadowColor = newValue
@@ -149,7 +149,7 @@ public class INDLinkLabel: UIView {
     /// The shadow offset of the text.
     ///
     /// This value is applied to the entirety of the string.
-    public var shadowOffset: CGSize? {
+    @IBInspectable public var shadowOffset: CGSize? {
         get { return _shadowOffset }
         set {
             _shadowOffset = newValue
@@ -171,15 +171,15 @@ public class INDLinkLabel: UIView {
     }
     
     /// The color of the highlight that appears over a link when tapping on it
-    public var linkHighlightColor: UIColor = UIColor(white: 0, alpha: 0.2)
+    @IBInspectable public var linkHighlightColor: UIColor = UIColor(white: 0, alpha: 0.2)
     
     /// The corner radius of the highlight that appears over a link when 
     /// tapping on it
-    public var linkHighlightCornerRadius: CGFloat = 2
+    @IBInspectable public var linkHighlightCornerRadius: CGFloat = 2
     
     // MARK: Text Layout
 
-    public var numberOfLines: Int = 1 {
+    @IBInspectable public var numberOfLines: Int = 1 {
         didSet {
             textContainer.maximumNumberOfLines = numberOfLines
             invalidateDisplayAndLayout()
