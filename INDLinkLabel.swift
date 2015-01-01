@@ -12,25 +12,25 @@ public class INDLinkLabel: UIView {
     // MARK: Text Attributes
     
     public var text: String? {
-        didSet {
-            if let text = text {
+        get { return _text }
+        set {
+            _text = newValue
+            if let text = _text {
                 setAttributedStringForString(text)
             } else {
                 clear()
             }
         }
     }
+    private var _text: String?
     
     public var attributedText: NSAttributedString? {
-        get {
-            return _attributedText
-        }
+        get { return _attributedText }
         set {
+            _attributedText = newValue
             if let attributedText = attributedText {
-                _attributedText = attributedText
                 setAttributedString(attributedText)
             } else {
-                _attributedText = nil
                 clear()
             }
         }
