@@ -346,7 +346,7 @@ public class INDLinkLabel: UIView {
         return contentSize
     }
     
-    // MARK: Tap Handling
+    // MARK: Touches
     
     private func linkRangeAtPoint(point: CGPoint) -> LinkRange? {
         if let linkRanges = linkRanges {
