@@ -68,6 +68,9 @@ public class INDLinkLabel: UIView {
         }
     }
     
+    public var linkHighlightColor: UIColor = UIColor(white: 0, alpha: 0.2)
+    public var linkHighlightCornerRadius: CGFloat = 2
+    
     // MARK: Text Layout
 
     public var numberOfLines: Int = 1 {
@@ -207,6 +210,31 @@ public class INDLinkLabel: UIView {
         let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
         layoutManager.drawBackgroundForGlyphRange(glyphRange, atPoint: bounds.origin)
         layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: bounds.origin)
+        
+        if let linkRange = tappedLinkRange {
+            linkHighlightColor.setFill()
+            for rect in highlightRectsForGlyphRange(linkRange.glyphRange) {
+                let path = UIBezierPath(roundedRect: rect, cornerRadius: linkHighlightCornerRadius)
+                path.fill()
+            }
+        }
+    }
+    
+    private func highlightRectsForGlyphRange(range: NSRange) -> [CGRect] {
+        var rects = [CGRect]()
+        layoutManager.enumerateLineFragmentsForGlyphRange(range) { (_, rect, _, effectiveRange, _) in
+            let boundingRect = self.layoutManager.boundingRectForGlyphRange(NSIntersectionRange(range, effectiveRange), inTextContainer: self.textContainer)
+            rects.append(boundingRect)
+        }
+        return rects
+    }
+    
+    private func enclosingRectsForGlyphRange(range: NSRange) -> [CGRect] {
+        var rects = [CGRect]()
+        layoutManager.enumerateEnclosingRectsForGlyphRange(range, withinSelectedGlyphRange: NSRange(location: NSNotFound, length: 0), inTextContainer: textContainer) { (rect, _) in
+            rects.append(rect)
+        }
+        return rects
     }
     
     // MARK: Layout
