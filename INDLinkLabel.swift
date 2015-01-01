@@ -186,6 +186,12 @@ import UIKit
         }
     }
     
+    public var preferredMaxLayoutWidth: CGFloat = 0 {
+        didSet {
+            invalidateDisplayAndLayout()
+        }
+    }
+    
     // MARK: Tap Handling
     
     public typealias LinkHandler = NSURL -> Void
@@ -347,20 +353,20 @@ import UIKit
     }
     
     // MARK: Layout
-    
-    private var contentSize: CGSize {
-        let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
-        return layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer).size
+
+    private func calculateContentSizeForWidth(width: CGFloat) -> CGSize {
+        textContainer.size = CGSize(width: width, height: CGFloat.max)
+        layoutManager.ensureLayoutForTextContainer(textContainer)
+        let size = layoutManager.usedRectForTextContainer(textContainer).size
+        return CGSize(width: ceil(size.width), height: ceil(size.height))
     }
     
     public override func intrinsicContentSize() -> CGSize {
-        textContainer.size = bounds.size
-        return contentSize
+        return calculateContentSizeForWidth(preferredMaxLayoutWidth)
     }
     
     public override func sizeThatFits(size: CGSize) -> CGSize {
-        textContainer.size = size
-        return contentSize
+        return calculateContentSizeForWidth(size.width)
     }
     
     // MARK: Touches
