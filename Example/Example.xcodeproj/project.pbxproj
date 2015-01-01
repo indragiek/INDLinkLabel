@@ -7,26 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7237E8A31A55318900AEB288 /* text.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 7237E8A21A55318900AEB288 /* text.rtf */; };
 		72A5FB711A551D6600D8A440 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A5FB701A551D6600D8A440 /* AppDelegate.swift */; };
 		72A5FB731A551D6600D8A440 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A5FB721A551D6600D8A440 /* ViewController.swift */; };
 		72A5FB761A551D6600D8A440 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 72A5FB741A551D6600D8A440 /* Main.storyboard */; };
 		72A5FB781A551D6600D8A440 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72A5FB771A551D6600D8A440 /* Images.xcassets */; };
 		72A5FB7B1A551D6600D8A440 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 72A5FB791A551D6600D8A440 /* LaunchScreen.xib */; };
-		72A5FB871A551D6600D8A440 /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A5FB861A551D6600D8A440 /* ExampleTests.swift */; };
 		72A5FB941A551E0400D8A440 /* INDataDetectorLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A5FB931A551E0400D8A440 /* INDataDetectorLabel.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		72A5FB811A551D6600D8A440 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 72A5FB631A551D6600D8A440 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 72A5FB6A1A551D6600D8A440;
-			remoteInfo = Example;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
+		7237E8A21A55318900AEB288 /* text.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = text.rtf; sourceTree = "<group>"; };
 		72A5FB6B1A551D6600D8A440 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A5FB6F1A551D6600D8A440 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		72A5FB701A551D6600D8A440 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -34,9 +25,6 @@
 		72A5FB751A551D6600D8A440 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		72A5FB771A551D6600D8A440 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		72A5FB7A1A551D6600D8A440 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		72A5FB801A551D6600D8A440 /* ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		72A5FB851A551D6600D8A440 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		72A5FB861A551D6600D8A440 /* ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleTests.swift; sourceTree = "<group>"; };
 		72A5FB931A551E0400D8A440 /* INDataDetectorLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = INDataDetectorLabel.swift; path = ../../INDataDetectorLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -48,21 +36,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		72A5FB7D1A551D6600D8A440 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7237E8A11A55318900AEB288 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7237E8A21A55318900AEB288 /* text.rtf */,
+			);
+			path = Resources;
+			sourceTree = SOURCE_ROOT;
+		};
 		72A5FB621A551D6600D8A440 = {
 			isa = PBXGroup;
 			children = (
 				72A5FB6D1A551D6600D8A440 /* Example */,
-				72A5FB831A551D6600D8A440 /* ExampleTests */,
 				72A5FB6C1A551D6600D8A440 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,7 +59,6 @@
 			isa = PBXGroup;
 			children = (
 				72A5FB6B1A551D6600D8A440 /* Example.app */,
-				72A5FB801A551D6600D8A440 /* ExampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,6 +72,7 @@
 				72A5FB741A551D6600D8A440 /* Main.storyboard */,
 				72A5FB771A551D6600D8A440 /* Images.xcassets */,
 				72A5FB791A551D6600D8A440 /* LaunchScreen.xib */,
+				7237E8A11A55318900AEB288 /* Resources */,
 				72A5FB6E1A551D6600D8A440 /* Supporting Files */,
 			);
 			path = Example;
@@ -94,23 +82,6 @@
 			isa = PBXGroup;
 			children = (
 				72A5FB6F1A551D6600D8A440 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		72A5FB831A551D6600D8A440 /* ExampleTests */ = {
-			isa = PBXGroup;
-			children = (
-				72A5FB861A551D6600D8A440 /* ExampleTests.swift */,
-				72A5FB841A551D6600D8A440 /* Supporting Files */,
-			);
-			path = ExampleTests;
-			sourceTree = "<group>";
-		};
-		72A5FB841A551D6600D8A440 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				72A5FB851A551D6600D8A440 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -135,24 +106,6 @@
 			productReference = 72A5FB6B1A551D6600D8A440 /* Example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		72A5FB7F1A551D6600D8A440 /* ExampleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 72A5FB8D1A551D6600D8A440 /* Build configuration list for PBXNativeTarget "ExampleTests" */;
-			buildPhases = (
-				72A5FB7C1A551D6600D8A440 /* Sources */,
-				72A5FB7D1A551D6600D8A440 /* Frameworks */,
-				72A5FB7E1A551D6600D8A440 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				72A5FB821A551D6600D8A440 /* PBXTargetDependency */,
-			);
-			name = ExampleTests;
-			productName = ExampleTests;
-			productReference = 72A5FB801A551D6600D8A440 /* ExampleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -164,10 +117,6 @@
 				TargetAttributes = {
 					72A5FB6A1A551D6600D8A440 = {
 						CreatedOnToolsVersion = 6.1.1;
-					};
-					72A5FB7F1A551D6600D8A440 = {
-						CreatedOnToolsVersion = 6.1.1;
-						TestTargetID = 72A5FB6A1A551D6600D8A440;
 					};
 				};
 			};
@@ -185,7 +134,6 @@
 			projectRoot = "";
 			targets = (
 				72A5FB6A1A551D6600D8A440 /* Example */,
-				72A5FB7F1A551D6600D8A440 /* ExampleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -198,13 +146,7 @@
 				72A5FB761A551D6600D8A440 /* Main.storyboard in Resources */,
 				72A5FB7B1A551D6600D8A440 /* LaunchScreen.xib in Resources */,
 				72A5FB781A551D6600D8A440 /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		72A5FB7E1A551D6600D8A440 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				7237E8A31A55318900AEB288 /* text.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,23 +163,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		72A5FB7C1A551D6600D8A440 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				72A5FB871A551D6600D8A440 /* ExampleTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		72A5FB821A551D6600D8A440 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 72A5FB6A1A551D6600D8A440 /* Example */;
-			targetProxy = 72A5FB811A551D6600D8A440 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		72A5FB741A551D6600D8A440 /* Main.storyboard */ = {
@@ -356,40 +282,6 @@
 			};
 			name = Release;
 		};
-		72A5FB8E1A551D6600D8A440 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = ExampleTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/Example";
-			};
-			name = Debug;
-		};
-		72A5FB8F1A551D6600D8A440 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = ExampleTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/Example";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -409,14 +301,7 @@
 				72A5FB8C1A551D6600D8A440 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-		};
-		72A5FB8D1A551D6600D8A440 /* Build configuration list for PBXNativeTarget "ExampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				72A5FB8E1A551D6600D8A440 /* Debug */,
-				72A5FB8F1A551D6600D8A440 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

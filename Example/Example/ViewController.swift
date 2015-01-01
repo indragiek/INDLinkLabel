@@ -9,17 +9,16 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    @IBOutlet var label: INDataDetectorLabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        let RTFPath = NSBundle.mainBundle().pathForResource("text", ofType: "rtf")!
+        let RTFData = NSData(contentsOfFile: RTFPath)!
+        let options = [NSDocumentTypeDocumentAttribute: NSRTFTextDocumentType]
+        label.numberOfLines = 0
+        label.attributedText = NSAttributedString(data: RTFData, options: options, documentAttributes: nil, error: nil)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-
 }
 

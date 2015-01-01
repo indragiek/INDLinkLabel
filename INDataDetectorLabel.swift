@@ -24,7 +24,7 @@ public class INDataDetectorLabel: UIView {
     public var attributedText: NSAttributedString? {
         didSet {
             if let attributedText = attributedText {
-                textStorage.setAttributedString(attributedText)
+                setAttributedString(attributedText)
             } else {
                 clear()
             }
@@ -51,6 +51,7 @@ public class INDataDetectorLabel: UIView {
     
     public var lineBreakMode: NSLineBreakMode = .ByTruncatingTail {
         didSet {
+            textContainer.lineBreakMode = lineBreakMode
             applyAttributeWithKey(NSParagraphStyleAttributeName, value: paragraphStyle)
         }
     }
@@ -69,7 +70,11 @@ public class INDataDetectorLabel: UIView {
     
     // MARK: Text Layout
 
-    public var numberOfLines: Int = 1
+    public var numberOfLines: Int = 1 {
+        didSet {
+            textContainer.maximumNumberOfLines = numberOfLines
+        }
+    }
     
     // MARK: Private
     
@@ -81,8 +86,13 @@ public class INDataDetectorLabel: UIView {
     
     private func commonInit() {
         textContainer = NSTextContainer()
+        textContainer.maximumNumberOfLines = numberOfLines
+        textContainer.lineBreakMode = lineBreakMode
+        textContainer.lineFragmentPadding = 0
+        
         layoutManager = NSLayoutManager()
         layoutManager.addTextContainer(textContainer)
+        
         textStorage = NSTextStorage()
         textStorage.addLayoutManager(layoutManager)
         
@@ -122,6 +132,7 @@ public class INDataDetectorLabel: UIView {
     
     private func clear() {
         textStorage.deleteCharactersInRange(NSRange(location: 0, length: textStorage.length))
+        setNeedsDisplay()
     }
     
     private func setAttributedStringForString(string: NSString) {
@@ -133,6 +144,11 @@ public class INDataDetectorLabel: UIView {
         applyAttributeWithKey(NSShadowAttributeName, value: shadow)
     }
     
+    private func setAttributedString(attrString: NSAttributedString) {
+        textStorage.setAttributedString(attrString)
+        setNeedsDisplay()
+    }
+    
     private func applyAttributeWithKey(key: NSString, value: AnyObject?) {
         let range = NSRange(location: 0, length: textStorage.length)
         if let value: AnyObject = value {
@@ -140,5 +156,14 @@ public class INDataDetectorLabel: UIView {
         } else {
             textStorage.removeAttribute(key, range: range)
         }
+        setNeedsDisplay()
+    }
+    
+    // MARK: Drawing
+    
+    public override func drawRect(rect: CGRect) {
+        textContainer.size = bounds.size
+        let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
+        layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: bounds.origin)
     }
 }
