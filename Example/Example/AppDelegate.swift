@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        print(UILabel(frame: CGRectMake(0, 0, 100, 100)).preferredMaxLayoutWidth)
         return true
     }
 

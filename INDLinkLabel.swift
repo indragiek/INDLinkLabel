@@ -11,7 +11,7 @@ import UIKit
 public class INDLinkLabel: UIView {
     // MARK: Text Attributes
     
-    public var text: NSString? {
+    public var text: String? {
         didSet {
             if let text = text {
                 setAttributedStringForString(text)
@@ -83,6 +83,15 @@ public class INDLinkLabel: UIView {
     private var textStorage: NSTextStorage!
     private var textContainer: NSTextContainer!
     
+    private struct LinkRange {
+        let URL: NSURL
+        let glyphRange: NSRange
+        let rects: [CGRect]
+    }
+    
+    private var linkRanges: [LinkRange]?
+    private var tappedLinkRange: LinkRange?
+    
     // MARK: Initialization
     
     private func commonInit() {
@@ -98,6 +107,8 @@ public class INDLinkLabel: UIView {
         textStorage.addLayoutManager(layoutManager)
         
         contentMode = .Redraw
+        
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: Selector("handleTap:")))
     }
     
     override init(frame: CGRect) {
@@ -134,10 +145,12 @@ public class INDLinkLabel: UIView {
     private func clear() {
         textStorage.deleteCharactersInRange(NSRange(location: 0, length: textStorage.length))
         invalidateDisplayAndLayout()
+        linkRanges = nil
     }
     
-    private func setAttributedStringForString(string: NSString) {
+    private func setAttributedStringForString(string: String) {
         textStorage.mutableString.setString(string)
+        cacheLinkRanges()
         
         applyAttributeWithKey(NSFontAttributeName, value: font)
         applyAttributeWithKey(NSForegroundColorAttributeName, value: textColor)
@@ -147,10 +160,11 @@ public class INDLinkLabel: UIView {
     
     private func setAttributedString(attrString: NSAttributedString) {
         textStorage.setAttributedString(attrString)
+        cacheLinkRanges()
         invalidateDisplayAndLayout()
     }
     
-    private func applyAttributeWithKey(key: NSString, value: AnyObject?) {
+    private func applyAttributeWithKey(key: String, value: AnyObject?) {
         let range = NSRange(location: 0, length: textStorage.length)
         if let value: AnyObject = value {
             textStorage.addAttribute(key, value: value, range: range)
@@ -163,6 +177,36 @@ public class INDLinkLabel: UIView {
     private func invalidateDisplayAndLayout() {
         setNeedsDisplay()
         invalidateIntrinsicContentSize()
+    }
+    
+    private func rectsForGlyphRange(range: NSRange) -> [CGRect] {
+        var rects = [CGRect]()
+        self.layoutManager.enumerateEnclosingRectsForGlyphRange(range, withinSelectedGlyphRange: NSRange(location: NSNotFound, length: 0), inTextContainer: self.textContainer) { (rect, _) in
+            rects.append(rect)
+        }
+        return rects
+    }
+    
+    private func cacheLinkRanges() {
+        var ranges = [LinkRange]()
+        textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: nil) { (value, range, _) in
+            // Because NSLinkAttributeName supports both NSURL and NSString
+            // values. *sigh*
+            let URL: NSURL? = {
+                if let string = value as? String {
+                    return NSURL(string: string)
+                } else if let URL = value as? NSURL {
+                    return URL
+                }
+                return nil
+            }()
+            if let URL = URL {
+                let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
+                let rects = self.rectsForGlyphRange(glyphRange)
+                ranges.append(LinkRange(URL: URL, glyphRange: glyphRange, rects: rects))
+            }
+        }
+        linkRanges = ranges
     }
     
     // MARK: Drawing
@@ -191,4 +235,37 @@ public class INDLinkLabel: UIView {
         textContainer.size = size
         return contentSize
     }
+    
+    // MARK: Tap Handling
+    
+    private func linkRangeAtPoint(point: CGPoint) -> LinkRange? {
+        if let linkRanges = linkRanges {
+            let glyphIndex = layoutManager.glyphIndexForPoint(point, inTextContainer: textContainer)
+            for linkRange in linkRanges {
+                if NSLocationInRange(glyphIndex, linkRange.glyphRange) {
+                    return linkRange
+                }
+            }
+        }
+        return nil
+    }
+    
+    public override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        tappedLinkRange = linkRangeAtPoint(touches.anyObject()!.locationInView(self))
+        setNeedsDisplay()
+    }
+    
+    public override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
+        tappedLinkRange = nil
+        setNeedsDisplay()
+    }
+    
+    public override func touchesCancelled(touches: NSSet!, withEvent event: UIEvent!) {
+        tappedLinkRange = nil
+        setNeedsDisplay()
+    }
+    
+    @objc private func handleTap(gestureRecognizer: UIGestureRecognizer) {
+    }
 }
+
