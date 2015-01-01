@@ -73,6 +73,7 @@ public class INDataDetectorLabel: UIView {
     public var numberOfLines: Int = 1 {
         didSet {
             textContainer.maximumNumberOfLines = numberOfLines
+            invalidateDisplayAndLayout()
         }
     }
     
@@ -132,7 +133,7 @@ public class INDataDetectorLabel: UIView {
     
     private func clear() {
         textStorage.deleteCharactersInRange(NSRange(location: 0, length: textStorage.length))
-        setNeedsDisplay()
+        invalidateDisplayAndLayout()
     }
     
     private func setAttributedStringForString(string: NSString) {
@@ -146,7 +147,7 @@ public class INDataDetectorLabel: UIView {
     
     private func setAttributedString(attrString: NSAttributedString) {
         textStorage.setAttributedString(attrString)
-        setNeedsDisplay()
+        invalidateDisplayAndLayout()
     }
     
     private func applyAttributeWithKey(key: NSString, value: AnyObject?) {
@@ -156,15 +157,38 @@ public class INDataDetectorLabel: UIView {
         } else {
             textStorage.removeAttribute(key, range: range)
         }
+        invalidateDisplayAndLayout()
+    }
+    
+    private func invalidateDisplayAndLayout() {
         setNeedsDisplay()
+        invalidateIntrinsicContentSize()
     }
     
     // MARK: Drawing
     
     public override func drawRect(rect: CGRect) {
         textContainer.size = bounds.size
+        
         let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
         layoutManager.drawBackgroundForGlyphRange(glyphRange, atPoint: bounds.origin)
         layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: bounds.origin)
+    }
+    
+    // MARK: Layout
+    
+    private var contentSize: CGSize {
+        let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
+        return layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer).size
+    }
+    
+    public override func intrinsicContentSize() -> CGSize {
+        textContainer.size = bounds.size
+        return contentSize
+    }
+    
+    public override func sizeThatFits(size: CGSize) -> CGSize {
+        textContainer.size = size
+        return contentSize
     }
 }
