@@ -28,6 +28,7 @@ import UIKit
 /// A simple UILabel subclass that is similar to UILabel but allows for
 /// tapping on links (i.e. anything marked with `NSLinkAttributeName`)
 @IBDesignable public class INDLinkLabel: UILabel {
+    // MARK: Styling
     
     override public var attributedText: NSAttributedString! {
         didSet { processLinks() }
@@ -145,7 +146,7 @@ import UIKit
             }
         }
         linkRanges = ranges
-        super.attributedText = textStorage.copy() as NSAttributedString
+        super.attributedText = textStorage
     }
     
     // MARK: Drawing
