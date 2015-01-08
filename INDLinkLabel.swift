@@ -73,9 +73,9 @@ import UIKit
     
     // MARK: Private
     
-    private var layoutManager: NSLayoutManager!
-    private var textStorage: NSTextStorage!
-    private var textContainer: NSTextContainer!
+    private var layoutManager = NSLayoutManager()
+    private var textStorage = NSTextStorage()
+    private var textContainer = NSTextContainer()
     
     private struct LinkRange {
         let URL: NSURL
@@ -90,7 +90,6 @@ import UIKit
     private func commonInit() {
         precondition(!adjustsFontSizeToFitWidth, "INDLinkLabel does not support the adjustsFontSizeToFitWidth property")
         
-        textContainer = NSTextContainer()
         textContainer.maximumNumberOfLines = numberOfLines
         textContainer.lineBreakMode = lineBreakMode
         textContainer.lineFragmentPadding = 0
