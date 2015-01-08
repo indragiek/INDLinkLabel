@@ -36,7 +36,7 @@ import UIKit
 /// A simple UILabel subclass that is similar to UILabel but allows for
 /// tapping on links (i.e. anything marked with `NSLinkAttributeName`)
 @IBDesignable public class INDLinkLabel: UILabel {
-    public weak var delegate: INDLinkLabelDelegate?
+    @IBOutlet public weak var delegate: INDLinkLabelDelegate?
     
     // MARK: Styling
     
