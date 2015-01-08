@@ -30,7 +30,7 @@ import UIKit
 @IBDesignable public class INDLinkLabel: UILabel {
     
     override public var attributedText: NSAttributedString! {
-        didSet { cacheLinkRanges() }
+        didSet { processLinks() }
     }
     
     override public var lineBreakMode: NSLineBreakMode {
@@ -112,16 +112,10 @@ import UIKit
     }
     
     // MARK: Attributes
-    
-    private func synchronizeTextStack() {
-        textStorage.setAttributedString(attributedText)
-        textContainer.size = CGSize(width: CGRectGetWidth(bounds), height: CGFloat.max)
-    }
-    
-    private func cacheLinkRanges() {
-        synchronizeTextStack()
-        
+
+    private func processLinks() {
         var ranges = [LinkRange]()
+        textStorage.setAttributedString(attributedText)
         textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: nil) { (value, range, _) in
             // Because NSLinkAttributeName supports both NSURL and NSString
             // values. *sigh*
@@ -132,14 +126,26 @@ import UIKit
                     return URL
                 }
                 return nil
-                }()
+            }()
+            
             if let URL = URL {
-                self.layoutManager.ensureLayoutForCharacterRange(range)
                 let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
                 ranges.append(LinkRange(URL: URL, glyphRange: glyphRange))
+                
+                // Remove `NSLinkAttributeName` to prevent `UILabel` from applying
+                // the default styling.
+                let attributes = self.textStorage.attributesAtIndex(range.location, effectiveRange: nil)
+                if attributes[NSForegroundColorAttributeName] == nil {
+                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: UIColor.blueColor(), range: range)
+                }
+                if attributes[NSUnderlineStyleAttributeName] == nil {
+                    self.textStorage.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: range)
+                }
+                self.textStorage.removeAttribute(NSLinkAttributeName, range: range)
             }
         }
         linkRanges = ranges
+        super.attributedText = textStorage.copy() as NSAttributedString
     }
     
     // MARK: Drawing
@@ -169,7 +175,7 @@ import UIKit
     
     private func linkRangeAtPoint(point: CGPoint) -> LinkRange? {
         if let linkRanges = linkRanges {
-            synchronizeTextStack()
+            textContainer.size = CGSize(width: CGRectGetWidth(bounds), height: CGFloat.max)
             layoutManager.ensureLayoutForTextContainer(textContainer)
             
             let glyphIndex = layoutManager.glyphIndexForPoint(point, inTextContainer: textContainer)
