@@ -118,6 +118,11 @@ import UIKit
     }
     
     // MARK: Attributes
+    
+    private struct DefaultLinkAttributes {
+        static var Color = UIColor.blueColor()
+        static var UnderlineStyle = NSUnderlineStyle.StyleSingle
+    }
 
     private func processLinks() {
         var ranges = [LinkRange]()
@@ -128,10 +133,9 @@ import UIKit
             let URL: NSURL? = {
                 if let string = value as? String {
                     return NSURL(string: string)
-                } else if let URL = value as? NSURL {
-                    return URL
+                } else {
+                    return value as? NSURL
                 }
-                return nil
             }()
             
             if let URL = URL {
@@ -142,10 +146,10 @@ import UIKit
                 // the default styling.
                 let attributes = self.textStorage.attributesAtIndex(range.location, effectiveRange: nil)
                 if attributes[NSForegroundColorAttributeName] == nil {
-                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: UIColor.blueColor(), range: range)
+                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: DefaultLinkAttributes.Color, range: range)
                 }
                 if attributes[NSUnderlineStyleAttributeName] == nil {
-                    self.textStorage.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: range)
+                    self.textStorage.addAttribute(NSUnderlineStyleAttributeName, value: DefaultLinkAttributes.UnderlineStyle.rawValue, range: range)
                 }
                 self.textStorage.removeAttribute(NSLinkAttributeName, range: range)
             }
@@ -181,6 +185,10 @@ import UIKit
     
     private func linkRangeAtPoint(point: CGPoint) -> LinkRange? {
         if let linkRanges = linkRanges {
+            // Passing in the UILabel's fitting size here doesn't work, the height
+            // needs to be unrestricted for it to correctly lay out all the text.
+            // Might be due to a difference in the computed text sizes of `UILabel`
+            // and `NSLayoutManager`.
             textContainer.size = CGSize(width: CGRectGetWidth(bounds), height: CGFloat.max)
             layoutManager.ensureLayoutForTextContainer(textContainer)
             
@@ -195,6 +203,8 @@ import UIKit
     }
     
     public override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
+        // Any taps that don't hit a link are ignored and passed to the next 
+        // responder.
         return linkRangeAtPoint(point) != nil
     }
     
