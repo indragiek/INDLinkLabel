@@ -63,6 +63,14 @@ import UIKit
         }
     }
     
+    override public var adjustsFontSizeToFitWidth: Bool {
+        didSet {
+            if adjustsFontSizeToFitWidth {
+                fatalError("INDLinkLabel does not support the adjustsFontSizeToFitWidth property")
+            }
+        }
+    }
+    
     // MARK: Private
     
     private var layoutManager: NSLayoutManager!
@@ -80,6 +88,8 @@ import UIKit
     // MARK: Initialization
     
     private func commonInit() {
+        precondition(!adjustsFontSizeToFitWidth, "INDLinkLabel does not support the adjustsFontSizeToFitWidth property")
+        
         textContainer = NSTextContainer()
         textContainer.maximumNumberOfLines = numberOfLines
         textContainer.lineBreakMode = lineBreakMode
