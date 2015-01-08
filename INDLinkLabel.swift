@@ -25,170 +25,30 @@
 
 import UIKit
 
-/// A simple label class that is similar to UILabel but allows for 
+/// A simple UILabel subclass that is similar to UILabel but allows for
 /// tapping on links (i.e. anything marked with `NSLinkAttributeName`)
-///
-/// This is not a drop-in replacement for UILabel, as it does not 
-/// implement functionality like font size adjustment, but most of the 
-/// commonly used properties are implemented.
-@IBDesignable public class INDLinkLabel: UIView {
-    // MARK: Text Attributes
+@IBDesignable public class INDLinkLabel: UILabel {
     
-    /// The text displayed by the label.
-    ///
-    /// Changing this property will also change the value of `attributedText`,
-    /// which will contain an attributed version of `text` with attributes
-    /// applied based on the style-related properties below.
-    @IBInspectable public var text: String? {
-        get { return _text }
-        set {
-            _text = newValue
-            if let text = _text {
-                setAttributedStringForString(text)
-            } else {
-                clear()
-            }
-        }
-    }
-    private var _text: String?
-    
-    /// The styled text displayed by the label.
-    ///
-    /// Changing this property will also change the value of `text`, as well
-    /// as the values of all of the style-related properties, which will be
-    /// set based on the attributes present in this string at index 0.
-    public var attributedText: NSAttributedString? {
-        get { return _attributedText }
-        set {
-            _attributedText = newValue
-            if let attributedText = attributedText {
-                setAttributedString(attributedText)
-            } else {
-                clear()
-            }
-        }
-    }
-    private var _attributedText: NSAttributedString?
-    
-    private struct Defaults {
-        static var font = UIFont.systemFontOfSize(17)
-        static var textColor = UIColor.blackColor()
-        static var textAlignment = NSTextAlignment.Left
-        static var lineBreakMode = NSLineBreakMode.ByTruncatingTail
+    override public var attributedText: NSAttributedString! {
+        didSet { cacheLinkRanges() }
     }
     
-    /// The font of the text.
-    ///
-    /// This value is applied to the entirety of the string.
-    public var font: UIFont {
-        get { return _font }
-        set {
-            _font = newValue
-            applyAttributeWithKey(NSFontAttributeName, value: _font)
-        }
-    }
-    private var _font = Defaults.font
-    
-    /// The color of the text.
-    ///
-    /// This value is applied to the entirety of the string.
-    @IBInspectable public var textColor: UIColor {
-        get { return _textColor }
-        set {
-            _textColor = newValue
-            applyAttributeWithKey(NSForegroundColorAttributeName, value: _textColor)
-        }
-    }
-    private var _textColor = Defaults.textColor
-    
-    /// The alignment of the text.
-    ///
-    /// This value is applied to the entirety of the string.
-    public var textAlignment: NSTextAlignment {
-        get { return _textAlignment }
-        set {
-            _textAlignment = newValue
-            applyAttributeWithKey(NSParagraphStyleAttributeName, value: _paragraphStyle)
-        }
-    }
-    private var _textAlignment = Defaults.textAlignment
-    
-    /// The line break mode of the text.
-    ///
-    /// This value is applied to the entirety of the string.
-    public var lineBreakMode: NSLineBreakMode {
-        get { return _lineBreakMode }
-        set {
-            _lineBreakMode = newValue
-            textContainer.lineBreakMode = _lineBreakMode
-            applyAttributeWithKey(NSParagraphStyleAttributeName, value: _paragraphStyle)
-        }
-    }
-    private var _lineBreakMode = Defaults.lineBreakMode
-    
-    private var _paragraphStyle: NSParagraphStyle {
-        let style = NSMutableParagraphStyle()
-        style.alignment = _textAlignment
-        style.lineBreakMode = _lineBreakMode
-        return style
-    }
-    
-    /// The shadow color of the text.
-    ///
-    /// This value is applied to the entirety of the string.
-    @IBInspectable public var shadowColor: UIColor? {
-        get { return _shadowColor }
-        set {
-            _shadowColor = newValue
-            applyAttributeWithKey(NSShadowAttributeName, value: _shadow)
-        }
-    }
-    private var _shadowColor: UIColor?
-    
-    
-    /// The shadow offset of the text.
-    ///
-    /// This value is applied to the entirety of the string.
-    @IBInspectable public var shadowOffset: CGSize? {
-        get { return _shadowOffset }
-        set {
-            _shadowOffset = newValue
-            applyAttributeWithKey(NSShadowAttributeName, value: _shadow)
-        }
-    }
-    private var _shadowOffset: CGSize?
-    
-    private var _shadow: NSShadow? {
-        if let color = _shadowColor {
-            let shadow = NSShadow()
-            shadow.shadowColor = color
-            if let offset = _shadowOffset {
-                shadow.shadowOffset = offset
-            }
-            return shadow
-        }
-        return nil
+    override public var lineBreakMode: NSLineBreakMode {
+        didSet { textContainer.lineBreakMode = lineBreakMode }
     }
     
     /// The color of the highlight that appears over a link when tapping on it
     @IBInspectable public var linkHighlightColor: UIColor = UIColor(white: 0, alpha: 0.2)
     
-    /// The corner radius of the highlight that appears over a link when 
+    /// The corner radius of the highlight that appears over a link when
     /// tapping on it
     @IBInspectable public var linkHighlightCornerRadius: CGFloat = 2
     
     // MARK: Text Layout
-
-    @IBInspectable public var numberOfLines: Int = 1 {
+    
+    override public var numberOfLines: Int {
         didSet {
             textContainer.maximumNumberOfLines = numberOfLines
-            invalidateDisplayAndLayout()
-        }
-    }
-    
-    public var preferredMaxLayoutWidth: CGFloat = 0 {
-        didSet {
-            invalidateDisplayAndLayout()
         }
     }
     
@@ -198,7 +58,7 @@ import UIKit
     
     /// Called when a link is tapped.
     ///
-    /// If no handler is provided, the link will be opened using 
+    /// If no handler is provided, the link will be opened using
     /// `UIApplication.openURL()`
     public var linkTapHandler: LinkHandler?
     
@@ -235,7 +95,7 @@ import UIKit
         textStorage = NSTextStorage()
         textStorage.addLayoutManager(layoutManager)
         
-        contentMode = .Redraw
+        userInteractionEnabled = true
         
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: Selector("handleTap:")))
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: Selector("handleLongPress:")))
@@ -251,60 +111,16 @@ import UIKit
         commonInit()
     }
     
-    // MARK: Applying Attributes
+    // MARK: Attributes
     
-    private func clear() {
-        textStorage.deleteCharactersInRange(NSRange(location: 0, length: textStorage.length))
-        invalidateDisplayAndLayout()
-        linkRanges = nil
-    }
-    
-    private func setAttributedStringForString(string: String) {
-        textStorage.mutableString.setString(string)
-        cacheLinkRanges()
-        
-        applyAttributeWithKey(NSFontAttributeName, value: _font)
-        applyAttributeWithKey(NSForegroundColorAttributeName, value: _textColor)
-        applyAttributeWithKey(NSParagraphStyleAttributeName, value: _paragraphStyle)
-        applyAttributeWithKey(NSShadowAttributeName, value: shadow)
-        
-        _attributedText = textStorage.copy() as? NSAttributedString
-    }
-    
-    private func setAttributedString(attrString: NSAttributedString) {
-        textStorage.setAttributedString(attrString)
-        cacheLinkRanges()
-        invalidateDisplayAndLayout()
-        
-        let attributes = attrString.attributesAtIndex(0, effectiveRange: nil)
-        _font = (attributes[NSFontAttributeName] as? UIFont) ?? Defaults.font
-        _textColor = (attributes[NSFontAttributeName] as? UIColor) ?? Defaults.textColor
-        
-        let paragraphStyle = attributes[NSParagraphStyleAttributeName] as? NSParagraphStyle
-        _textAlignment = paragraphStyle?.alignment ?? Defaults.textAlignment
-        _lineBreakMode = paragraphStyle?.lineBreakMode ?? Defaults.lineBreakMode
-        
-        let shadow = attributes[NSShadowAttributeName] as? NSShadow
-        _shadowColor = shadow?.shadowColor as? UIColor
-        _shadowOffset = shadow?.shadowOffset
-    }
-    
-    private func applyAttributeWithKey(key: String, value: AnyObject?) {
-        let range = NSRange(location: 0, length: textStorage.length)
-        if let value: AnyObject = value {
-            textStorage.addAttribute(key, value: value, range: range)
-        } else {
-            textStorage.removeAttribute(key, range: range)
-        }
-        invalidateDisplayAndLayout()
-    }
-    
-    private func invalidateDisplayAndLayout() {
-        setNeedsDisplay()
-        invalidateIntrinsicContentSize()
+    private func synchronizeTextStack() {
+        textStorage.setAttributedString(attributedText)
+        textContainer.size = CGSize(width: CGRectGetWidth(bounds), height: CGFloat.max)
     }
     
     private func cacheLinkRanges() {
+        synchronizeTextStack()
+        
         var ranges = [LinkRange]()
         textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: nil) { (value, range, _) in
             // Because NSLinkAttributeName supports both NSURL and NSString
@@ -316,8 +132,9 @@ import UIKit
                     return URL
                 }
                 return nil
-            }()
+                }()
             if let URL = URL {
+                self.layoutManager.ensureLayoutForCharacterRange(range)
                 let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
                 ranges.append(LinkRange(URL: URL, glyphRange: glyphRange))
             }
@@ -328,11 +145,7 @@ import UIKit
     // MARK: Drawing
     
     public override func drawRect(rect: CGRect) {
-        textContainer.size = bounds.size
-        
-        let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
-        layoutManager.drawBackgroundForGlyphRange(glyphRange, atPoint: bounds.origin)
-        layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: bounds.origin)
+        super.drawRect(rect)
         
         if let linkRange = tappedLinkRange {
             linkHighlightColor.setFill()
@@ -352,27 +165,13 @@ import UIKit
         return rects
     }
     
-    // MARK: Layout
-
-    private func calculateContentSizeForWidth(width: CGFloat) -> CGSize {
-        textContainer.size = CGSize(width: width, height: CGFloat.max)
-        layoutManager.ensureLayoutForTextContainer(textContainer)
-        let size = layoutManager.usedRectForTextContainer(textContainer).size
-        return CGSize(width: ceil(size.width), height: ceil(size.height))
-    }
-    
-    public override func intrinsicContentSize() -> CGSize {
-        return calculateContentSizeForWidth(preferredMaxLayoutWidth)
-    }
-    
-    public override func sizeThatFits(size: CGSize) -> CGSize {
-        return calculateContentSizeForWidth(size.width)
-    }
-    
     // MARK: Touches
     
     private func linkRangeAtPoint(point: CGPoint) -> LinkRange? {
         if let linkRanges = linkRanges {
+            synchronizeTextStack()
+            layoutManager.ensureLayoutForTextContainer(textContainer)
+            
             let glyphIndex = layoutManager.glyphIndexForPoint(point, inTextContainer: textContainer)
             for linkRange in linkRanges {
                 if NSLocationInRange(glyphIndex, linkRange.glyphRange) {
@@ -416,4 +215,3 @@ import UIKit
         }
     }
 }
-
