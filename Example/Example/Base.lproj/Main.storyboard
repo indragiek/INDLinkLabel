@@ -17,21 +17,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mQW-9l-Nbf" customClass="INDLinkLabel" customModule="Example" customModuleProvider="target">
-                                <rect key="frame" x="20" y="20" width="560" height="21"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="frM-53-yfg" customClass="INDLinkLabel" customModule="Example" customModuleProvider="target">
+                                <rect key="frame" x="20" y="28" width="560" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" relation="greaterThanOrEqual" secondItem="mQW-9l-Nbf" secondAttribute="bottom" constant="20" id="JIm-NX-mkP"/>
-                            <constraint firstItem="mQW-9l-Nbf" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="4" id="QEF-cn-Tjs"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="mQW-9l-Nbf" secondAttribute="trailing" constant="4" id="oMz-sY-HJF"/>
-                            <constraint firstItem="mQW-9l-Nbf" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" id="sok-6v-ipd"/>
+                            <constraint firstItem="frM-53-yfg" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="8" id="MbB-Gw-hqu"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="frM-53-yfg" secondAttribute="trailing" constant="4" id="aj5-iB-jNf"/>
+                            <constraint firstItem="frM-53-yfg" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="4" id="rv8-oN-mYr"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="label" destination="mQW-9l-Nbf" id="Mmj-xJ-Cd7"/>
+                        <outlet property="label" destination="frM-53-yfg" id="vdY-R1-FjZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
