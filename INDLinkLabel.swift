@@ -194,6 +194,10 @@ import UIKit
         return nil
     }
     
+    public override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
+        return linkRangeAtPoint(point) != nil
+    }
+    
     public override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         tappedLinkRange = linkRangeAtPoint(touches.anyObject()!.locationInView(self))
         setNeedsDisplay()
