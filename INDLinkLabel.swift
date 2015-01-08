@@ -25,9 +25,19 @@
 
 import UIKit
 
+@objc public protocol INDLinkLabelDelegate {
+    /// Called when a link is tapped.
+    optional func linkLabel(label: INDLinkLabel, didTapLinkWithURL URL: NSURL)
+    
+    /// Called when a link is long pressed.
+    optional func linkLabel(label: INDLinkLabel, didLongPressLinkWithURL URL: NSURL)
+}
+
 /// A simple UILabel subclass that is similar to UILabel but allows for
 /// tapping on links (i.e. anything marked with `NSLinkAttributeName`)
 @IBDesignable public class INDLinkLabel: UILabel {
+    public weak var delegate: INDLinkLabelDelegate?
+    
     // MARK: Styling
     
     override public var attributedText: NSAttributedString! {
@@ -52,21 +62,6 @@ import UIKit
             textContainer.maximumNumberOfLines = numberOfLines
         }
     }
-    
-    // MARK: Tap Handling
-    
-    public typealias LinkHandler = NSURL -> Void
-    
-    /// Called when a link is tapped.
-    ///
-    /// If no handler is provided, the link will be opened using
-    /// `UIApplication.openURL()`
-    public var linkTapHandler: LinkHandler?
-    
-    /// Called when a link is long pressed.
-    ///
-    /// If no handler is provided, nothing will happen on logn press.
-    public var linkLongPressHandler: LinkHandler?
     
     // MARK: Private
     
@@ -206,19 +201,13 @@ import UIKit
     
     @objc private func handleTap(gestureRecognizer: UIGestureRecognizer) {
         if let linkRange = tappedLinkRange {
-            if let handler = linkTapHandler {
-                handler(linkRange.URL)
-            } else {
-                UIApplication.sharedApplication().openURL(linkRange.URL)
-            }
+            delegate?.linkLabel?(self, didTapLinkWithURL: linkRange.URL)
         }
     }
     
     @objc private func handleLongPress(gestureRecognizer: UIGestureRecognizer) {
         if let linkRange = tappedLinkRange {
-            if let handler = linkLongPressHandler {
-                handler(linkRange.URL)
-            }
+            delegate?.linkLabel?(self, didLongPressLinkWithURL: linkRange.URL)
         }
     }
 }
