@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, INDLinkLabelDelegate {
     
     @IBOutlet var label: INDLinkLabel!
 
@@ -20,10 +20,17 @@ class ViewController: UIViewController {
         
         label.numberOfLines = 0
         label.attributedText = NSAttributedString(data: RTFData, options: options, documentAttributes: nil, error: nil)
-        label.linkLongPressHandler = { URL in
-            let activityController = UIActivityViewController(activityItems: [URL], applicationActivities: nil)
-            self.presentViewController(activityController, animated: true, completion: nil)
-        }
+        label.delegate = self
+    }
+    
+    // MARK: INDLinkLabelDelegate
+    
+    func linkLabel(label: INDLinkLabel, didLongPressLinkWithURL URL: NSURL) {
+        let activityController = UIActivityViewController(activityItems: [URL], applicationActivities: nil)
+        self.presentViewController(activityController, animated: true, completion: nil)
+    }
+    
+    func linkLabel(label: INDLinkLabel, didTapLinkWithURL URL: NSURL) {
+        UIApplication.sharedApplication().openURL(URL)
     }
 }
-
