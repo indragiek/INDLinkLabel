@@ -33,8 +33,8 @@ import UIKit
     optional func linkLabel(label: INDLinkLabel, didLongPressLinkWithURL URL: NSURL)
 }
 
-/// A simple UILabel subclass that is similar to UILabel but allows for
-/// tapping on links (i.e. anything marked with `NSLinkAttributeName`)
+/// A simple UILabel subclass that allows for tapping and long pressing on links 
+/// (i.e. anything marked with `NSLinkAttributeName`)
 @IBDesignable public class INDLinkLabel: UILabel {
     @IBOutlet public weak var delegate: INDLinkLabelDelegate?
     
