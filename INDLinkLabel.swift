@@ -191,11 +191,14 @@ import UIKit
             // and `NSLayoutManager`.
             textContainer.size = CGSize(width: CGRectGetWidth(bounds), height: CGFloat.max)
             layoutManager.ensureLayoutForTextContainer(textContainer)
+            let boundingRect = layoutManager.boundingRectForGlyphRange(layoutManager.glyphRangeForTextContainer(textContainer), inTextContainer: textContainer)
             
-            let glyphIndex = layoutManager.glyphIndexForPoint(point, inTextContainer: textContainer)
-            for linkRange in linkRanges {
-                if NSLocationInRange(glyphIndex, linkRange.glyphRange) {
-                    return linkRange
+            if CGRectContainsPoint(boundingRect, point) {
+                let glyphIndex = layoutManager.glyphIndexForPoint(point, inTextContainer: textContainer)
+                for linkRange in linkRanges {
+                    if NSLocationInRange(glyphIndex, linkRange.glyphRange) {
+                        return linkRange
+                    }
                 }
             }
         }
