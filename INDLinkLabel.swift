@@ -193,7 +193,7 @@ import UIKit
             layoutManager.ensureLayoutForTextContainer(textContainer)
             let boundingRect = layoutManager.boundingRectForGlyphRange(layoutManager.glyphRangeForTextContainer(textContainer), inTextContainer: textContainer)
             
-            if CGRectContainsPoint(boundingRect, point) {
+            if boundingRect.contains(point) {
                 let glyphIndex = layoutManager.glyphIndexForPoint(point, inTextContainer: textContainer)
                 for linkRange in linkRanges {
                     if NSLocationInRange(glyphIndex, linkRange.glyphRange) {
