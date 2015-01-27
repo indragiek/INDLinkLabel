@@ -143,11 +143,11 @@ import UIKit
                     return value as? NSURL
                 }
             }()
-
+            
             if let URL = URL {
                 let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
                 ranges.append(LinkRange(URL: URL, glyphRange: glyphRange))
-
+                
                 // Remove `NSLinkAttributeName` to prevent `UILabel` from applying
                 // the default styling.
                 self.textStorage.removeAttribute(NSLinkAttributeName, range: range)
