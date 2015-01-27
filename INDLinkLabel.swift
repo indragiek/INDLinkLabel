@@ -126,32 +126,34 @@ import UIKit
 
     private func processLinks() {
         var ranges = [LinkRange]()
-        textStorage.setAttributedString(attributedText)
-        textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: nil) { (value, range, _) in
-            // Because NSLinkAttributeName supports both NSURL and NSString
-            // values. *sigh*
-            let URL: NSURL? = {
-                if let string = value as? String {
-                    return NSURL(string: string)
-                } else {
-                    return value as? NSURL
-                }
-            }()
-            
-            if let URL = URL {
-                let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
-                ranges.append(LinkRange(URL: URL, glyphRange: glyphRange))
+        if let attributedText = attributedText {
+            textStorage.setAttributedString(attributedText)
+            textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: nil) { (value, range, _) in
+                // Because NSLinkAttributeName supports both NSURL and NSString
+                // values. *sigh*
+                let URL: NSURL? = {
+                    if let string = value as? String {
+                        return NSURL(string: string)
+                    } else {
+                        return value as? NSURL
+                    }
+                }()
                 
-                // Remove `NSLinkAttributeName` to prevent `UILabel` from applying
-                // the default styling.
-                let attributes = self.textStorage.attributesAtIndex(range.location, effectiveRange: nil)
-                if attributes[NSForegroundColorAttributeName] == nil {
-                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: DefaultLinkAttributes.Color, range: range)
+                if let URL = URL {
+                    let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
+                    ranges.append(LinkRange(URL: URL, glyphRange: glyphRange))
+                    
+                    // Remove `NSLinkAttributeName` to prevent `UILabel` from applying
+                    // the default styling.
+                    let attributes = self.textStorage.attributesAtIndex(range.location, effectiveRange: nil)
+                    if attributes[NSForegroundColorAttributeName] == nil {
+                        self.textStorage.addAttribute(NSForegroundColorAttributeName, value: DefaultLinkAttributes.Color, range: range)
+                    }
+                    if attributes[NSUnderlineStyleAttributeName] == nil {
+                        self.textStorage.addAttribute(NSUnderlineStyleAttributeName, value: DefaultLinkAttributes.UnderlineStyle.rawValue, range: range)
+                    }
+                    self.textStorage.removeAttribute(NSLinkAttributeName, range: range)
                 }
-                if attributes[NSUnderlineStyleAttributeName] == nil {
-                    self.textStorage.addAttribute(NSUnderlineStyleAttributeName, value: DefaultLinkAttributes.UnderlineStyle.rawValue, range: range)
-                }
-                self.textStorage.removeAttribute(NSLinkAttributeName, range: range)
             }
         }
         linkRanges = ranges
