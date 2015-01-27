@@ -32,12 +32,10 @@ import UIKit
     /// Called when a link is long pressed.
     optional func linkLabel(label: INDLinkLabel, didLongPressLinkWithURL URL: NSURL)
 
-    /**
-     Called when parsing links from attributed text.
-     The delegate may determine whether to use the text's original attributes,
-     use the proposed INDLinkLabel attributes (blue text color, and underlined),
-     or supply a completely custom set of attributes for the given link.
-    */
+    /// Called when parsing links from attributed text.
+    /// The delegate may determine whether to use the text's original attributes,
+    /// use the proposed INDLinkLabel attributes (blue text color, and underlined),
+    /// or supply a completely custom set of attributes for the given link.
     optional func linkLabel(label: INDLinkLabel, attributesForURL URL: NSURL, originalAttributes: NSDictionary, proposedAttributes: NSDictionary) -> NSDictionary
 }
 
