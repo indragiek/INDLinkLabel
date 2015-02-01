@@ -31,6 +31,12 @@ import UIKit
     
     /// Called when a link is long pressed.
     optional func linkLabel(label: INDLinkLabel, didLongPressLinkWithURL URL: NSURL)
+
+    /// Called when parsing links from attributed text.
+    /// The delegate may determine whether to use the text's original attributes,
+    /// use the proposed INDLinkLabel attributes (blue text color, and underlined),
+    /// or supply a completely custom set of attributes for the given link.
+    optional func linkLabel(label: INDLinkLabel, attributesForURL URL: NSURL, originalAttributes: NSDictionary, proposedAttributes: NSDictionary) -> NSDictionary
 }
 
 /// A simple UILabel subclass that allows for tapping and long pressing on links 
@@ -125,32 +131,41 @@ import UIKit
 
     private func processLinks() {
         var ranges = [LinkRange]()
-        textStorage.setAttributedString(attributedText)
-        textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: nil) { (value, range, _) in
-            // Because NSLinkAttributeName supports both NSURL and NSString
-            // values. *sigh*
-            let URL: NSURL? = {
-                if let string = value as? String {
-                    return NSURL(string: string)
-                } else {
-                    return value as? NSURL
-                }
-            }()
-            
-            if let URL = URL {
-                let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
-                ranges.append(LinkRange(URL: URL, glyphRange: glyphRange))
+        if let attributedText = attributedText {
+            textStorage.setAttributedString(attributedText)
+            textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: nil) { (value, range, _) in
+                // Because NSLinkAttributeName supports both NSURL and NSString
+                // values. *sigh*
+                let URL: NSURL? = {
+                    if let string = value as? String {
+                        return NSURL(string: string)
+                    } else {
+                        return value as? NSURL
+                    }
+                }()
                 
-                // Remove `NSLinkAttributeName` to prevent `UILabel` from applying
-                // the default styling.
-                let attributes = self.textStorage.attributesAtIndex(range.location, effectiveRange: nil)
-                if attributes[NSForegroundColorAttributeName] == nil {
-                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: DefaultLinkAttributes.Color, range: range)
+                if let URL = URL {
+                    let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
+                    ranges.append(LinkRange(URL: URL, glyphRange: glyphRange))
+                    
+                    // Remove `NSLinkAttributeName` to prevent `UILabel` from applying
+                    // the default styling.
+                    self.textStorage.removeAttribute(NSLinkAttributeName, range: range)
+                    
+                    let originalAttributes = self.textStorage.attributesAtIndex(range.location, effectiveRange: nil)
+                    var proposedAttributes = originalAttributes
+                    
+                    if originalAttributes[NSForegroundColorAttributeName] == nil {
+                        proposedAttributes[NSForegroundColorAttributeName] = DefaultLinkAttributes.Color
+                    }
+                    if originalAttributes[NSUnderlineStyleAttributeName] == nil {
+                        proposedAttributes[NSUnderlineStyleAttributeName] = DefaultLinkAttributes.UnderlineStyle.rawValue
+                    }
+                    
+                    let acceptedAttributes = self.delegate?.linkLabel?(self, attributesForURL: URL, originalAttributes: originalAttributes, proposedAttributes: proposedAttributes)
+                        ?? proposedAttributes;
+                    self.textStorage.setAttributes(acceptedAttributes, range: range)
                 }
-                if attributes[NSUnderlineStyleAttributeName] == nil {
-                    self.textStorage.addAttribute(NSUnderlineStyleAttributeName, value: DefaultLinkAttributes.UnderlineStyle.rawValue, range: range)
-                }
-                self.textStorage.removeAttribute(NSLinkAttributeName, range: range)
             }
         }
         linkRanges = ranges
@@ -190,11 +205,14 @@ import UIKit
             // and `NSLayoutManager`.
             textContainer.size = self.textRectForBounds(self.bounds, limitedToNumberOfLines: self.numberOfLines).size
             layoutManager.ensureLayoutForTextContainer(textContainer)
+            let boundingRect = layoutManager.boundingRectForGlyphRange(layoutManager.glyphRangeForTextContainer(textContainer), inTextContainer: textContainer)
             
-            let glyphIndex = layoutManager.glyphIndexForPoint(point, inTextContainer: textContainer)
-            for linkRange in linkRanges {
-                if NSLocationInRange(glyphIndex, linkRange.glyphRange) {
-                    return linkRange
+            if boundingRect.contains(point) {
+                let glyphIndex = layoutManager.glyphIndexForPoint(point, inTextContainer: textContainer)
+                for linkRange in linkRanges {
+                    if NSLocationInRange(glyphIndex, linkRange.glyphRange) {
+                        return linkRange
+                    }
                 }
             }
         }
