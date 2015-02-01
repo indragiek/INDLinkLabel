@@ -203,7 +203,7 @@ import UIKit
             // needs to be unrestricted for it to correctly lay out all the text.
             // Might be due to a difference in the computed text sizes of `UILabel`
             // and `NSLayoutManager`.
-            textContainer.size = self.textRectForBounds(self.bounds, limitedToNumberOfLines: self.numberOfLines).size
+            textContainer.size = CGSize(width: CGRectGetWidth(bounds), height: CGFloat.max)
             layoutManager.ensureLayoutForTextContainer(textContainer)
             let boundingRect = layoutManager.boundingRectForGlyphRange(layoutManager.glyphRangeForTextContainer(textContainer), inTextContainer: textContainer)
             
