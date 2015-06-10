@@ -19,9 +19,9 @@ optional func linkLabel(label: INDLinkLabel, didLongPressLinkWithURL URL: NSURL)
 
 `UILabel`'s `adjustsFontSizeToFitWidth` property (and its associated properties) are not supported.
 
-### Swift 1.2
+### Swift 2.0
 
-Support for compiling under Swift 1.2 (Xcode 6.3) is in the `swift-1.2` branch.
+Support for compiling under Swift 2.0 (Xcode 7) is in the `swift-2.0` branch.
 
 ### Contact
 
