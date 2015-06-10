@@ -125,8 +125,8 @@ import UIKit
     // MARK: Attributes
     
     private struct DefaultLinkAttributes {
-        static var Color = UIColor.blueColor()
-        static var UnderlineStyle = NSUnderlineStyle.StyleSingle
+        static let Color = UIColor.blueColor()
+        static let UnderlineStyle = NSUnderlineStyle.StyleSingle
     }
 
     private func processLinks() {
@@ -225,17 +225,19 @@ import UIKit
         return linkRangeAtPoint(point) != nil
     }
     
-    public override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        tappedLinkRange = linkRangeAtPoint(touches.anyObject()!.locationInView(self))
-        setNeedsDisplay()
+    public override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        if let touch = touches.first as? UITouch {
+            tappedLinkRange = linkRangeAtPoint(touch.locationInView(self))
+            setNeedsDisplay()
+        }
     }
     
-    public override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
+    public override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
         tappedLinkRange = nil
         setNeedsDisplay()
     }
     
-    public override func touchesCancelled(touches: NSSet!, withEvent event: UIEvent!) {
+    public override func touchesCancelled(touches: Set<NSObject>, withEvent event: UIEvent!) {
         tappedLinkRange = nil
         setNeedsDisplay()
     }
