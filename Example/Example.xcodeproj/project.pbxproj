@@ -112,6 +112,7 @@
 		72A5FB631A551D6600D8A440 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = "Indragie Karunaratne";
 				TargetAttributes = {

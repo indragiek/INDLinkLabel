@@ -19,7 +19,11 @@ class ViewController: UIViewController, INDLinkLabelDelegate {
         let options = [NSDocumentTypeDocumentAttribute: NSRTFTextDocumentType]
         
         label.numberOfLines = 0
-        label.attributedText = NSAttributedString(data: RTFData, options: options, documentAttributes: nil, error: nil)
+        do {
+            label.attributedText = try NSAttributedString(data: RTFData, options: options, documentAttributes: nil)
+        } catch _ {
+            label.attributedText = nil
+        }
         label.delegate = self
     }
     

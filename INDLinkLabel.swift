@@ -36,7 +36,7 @@ import UIKit
     /// The delegate may determine whether to use the text's original attributes,
     /// use the proposed INDLinkLabel attributes (blue text color, and underlined),
     /// or supply a completely custom set of attributes for the given link.
-    optional func linkLabel(label: INDLinkLabel, attributesForURL URL: NSURL, originalAttributes: NSDictionary, proposedAttributes: NSDictionary) -> NSDictionary
+    optional func linkLabel(label: INDLinkLabel, attributesForURL URL: NSURL, originalAttributes: [String: AnyObject], proposedAttributes: [String: AnyObject]) -> [String: AnyObject]
 }
 
 /// A simple UILabel subclass that allows for tapping and long pressing on links 
@@ -46,7 +46,7 @@ import UIKit
     
     // MARK: Styling
     
-    override public var attributedText: NSAttributedString! {
+    override public var attributedText: NSAttributedString? {
         didSet { processLinks() }
     }
     
@@ -133,7 +133,7 @@ import UIKit
         var ranges = [LinkRange]()
         if let attributedText = attributedText {
             textStorage.setAttributedString(attributedText)
-            textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: nil) { (value, range, _) in
+            textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: []) { (value, range, _) in
                 // Because NSLinkAttributeName supports both NSURL and NSString
                 // values. *sigh*
                 let URL: NSURL? = {
@@ -225,19 +225,19 @@ import UIKit
         return linkRangeAtPoint(point) != nil
     }
     
-    public override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        if let touch = touches.first as? UITouch {
+    public override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if let touch = touches.first {
             tappedLinkRange = linkRangeAtPoint(touch.locationInView(self))
             setNeedsDisplay()
         }
     }
     
-    public override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+    public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         tappedLinkRange = nil
         setNeedsDisplay()
     }
     
-    public override func touchesCancelled(touches: Set<NSObject>, withEvent event: UIEvent!) {
+    public override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
         tappedLinkRange = nil
         setNeedsDisplay()
     }
