@@ -108,8 +108,8 @@ import UIKit
         
         userInteractionEnabled = true
         
-        addGestureRecognizer(UITapGestureRecognizer(target: self, action: Selector("handleTap:")))
-        addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: Selector("handleLongPress:")))
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(INDLinkLabel.handleTap(_:))))
+        addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(INDLinkLabel.handleLongPress(_:))))
     }
     
     override init(frame: CGRect) {
@@ -117,7 +117,7 @@ import UIKit
         commonInit()
     }
     
-    public required init(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
