@@ -27,49 +27,49 @@ import UIKit
 
 @objc public protocol INDLinkLabelDelegate {
     /// Called when a link is tapped.
-    optional func linkLabel(label: INDLinkLabel, didTapLinkWithURL URL: NSURL)
+    @objc optional func linkLabel(_ label: INDLinkLabel, didTapLinkWithURL URL: URL)
     
     /// Called when a link is long pressed.
-    optional func linkLabel(label: INDLinkLabel, didLongPressLinkWithURL URL: NSURL)
+    @objc optional func linkLabel(_ label: INDLinkLabel, didLongPressLinkWithURL URL: URL)
 
     /// Called when parsing links from attributed text.
     /// The delegate may determine whether to use the text's original attributes,
     /// use the proposed INDLinkLabel attributes (blue text color, and underlined),
     /// or supply a completely custom set of attributes for the given link.
-    optional func linkLabel(label: INDLinkLabel, attributesForURL URL: NSURL, originalAttributes: [String: AnyObject], proposedAttributes: [String: AnyObject]) -> [String: AnyObject]
+    @objc optional func linkLabel(_ label: INDLinkLabel, attributesForURL URL: URL, originalAttributes: [String: AnyObject], proposedAttributes: [String: AnyObject]) -> [String: AnyObject]
 }
 
 /// A simple UILabel subclass that allows for tapping and long pressing on links 
 /// (i.e. anything marked with `NSLinkAttributeName`)
-@IBDesignable public class INDLinkLabel: UILabel {
-    @IBOutlet public weak var delegate: INDLinkLabelDelegate?
+@IBDesignable open class INDLinkLabel: UILabel {
+    @IBOutlet open weak var delegate: INDLinkLabelDelegate?
     
     // MARK: Styling
     
-    override public var attributedText: NSAttributedString? {
+    override open var attributedText: NSAttributedString? {
         didSet { processLinks() }
     }
     
-    override public var lineBreakMode: NSLineBreakMode {
+    override open var lineBreakMode: NSLineBreakMode {
         didSet { textContainer.lineBreakMode = lineBreakMode }
     }
     
     /// The color of the highlight that appears over a link when tapping on it
-    @IBInspectable public var linkHighlightColor: UIColor = UIColor(white: 0, alpha: 0.2)
+    @IBInspectable open var linkHighlightColor: UIColor = UIColor(white: 0, alpha: 0.2)
     
     /// The corner radius of the highlight that appears over a link when
     /// tapping on it
-    @IBInspectable public var linkHighlightCornerRadius: CGFloat = 2
+    @IBInspectable open var linkHighlightCornerRadius: CGFloat = 2
     
     // MARK: Text Layout
     
-    override public var numberOfLines: Int {
+    override open var numberOfLines: Int {
         didSet {
             textContainer.maximumNumberOfLines = numberOfLines
         }
     }
     
-    override public var adjustsFontSizeToFitWidth: Bool {
+    override open var adjustsFontSizeToFitWidth: Bool {
         didSet {
             if adjustsFontSizeToFitWidth {
                 fatalError("INDLinkLabel does not support the adjustsFontSizeToFitWidth property")
@@ -79,21 +79,21 @@ import UIKit
     
     // MARK: Private
     
-    private var layoutManager = NSLayoutManager()
-    private var textStorage = NSTextStorage()
-    private var textContainer = NSTextContainer()
+    fileprivate var layoutManager = NSLayoutManager()
+    fileprivate var textStorage = NSTextStorage()
+    fileprivate var textContainer = NSTextContainer()
     
-    private struct LinkRange {
-        let URL: NSURL
+    fileprivate struct LinkRange {
+        let URL: Foundation.URL
         let glyphRange: NSRange
     }
     
-    private var linkRanges: [LinkRange]?
-    private var tappedLinkRange: LinkRange?
+    fileprivate var linkRanges: [LinkRange]?
+    fileprivate var tappedLinkRange: LinkRange?
     
     // MARK: Initialization
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         precondition(!adjustsFontSizeToFitWidth, "INDLinkLabel does not support the adjustsFontSizeToFitWidth property")
         
         textContainer.maximumNumberOfLines = numberOfLines
@@ -106,7 +106,7 @@ import UIKit
         textStorage = NSTextStorage()
         textStorage.addLayoutManager(layoutManager)
         
-        userInteractionEnabled = true
+        isUserInteractionEnabled = true
         
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(INDLinkLabel.handleTap(_:))))
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(INDLinkLabel.handleLongPress(_:))))
@@ -124,35 +124,35 @@ import UIKit
     
     // MARK: Attributes
     
-    private struct DefaultLinkAttributes {
-        static let Color = UIColor.blueColor()
-        static let UnderlineStyle = NSUnderlineStyle.StyleSingle
+    fileprivate struct DefaultLinkAttributes {
+        static let Color = UIColor.blue
+        static let UnderlineStyle = NSUnderlineStyle.styleSingle
     }
 
-    private func processLinks() {
+    fileprivate func processLinks() {
         var ranges = [LinkRange]()
         if let attributedText = attributedText {
             textStorage.setAttributedString(attributedText)
-            textStorage.enumerateAttribute(NSLinkAttributeName, inRange: NSRange(location: 0, length: textStorage.length), options: []) { (value, range, _) in
+            textStorage.enumerateAttribute(NSLinkAttributeName, in: NSRange(location: 0, length: textStorage.length), options: []) { (value, range, _) in
                 // Because NSLinkAttributeName supports both NSURL and NSString
                 // values. *sigh*
-                let URL: NSURL? = {
+                let URL: Foundation.URL? = {
                     if let string = value as? String {
-                        return NSURL(string: string)
+                        return Foundation.URL(string: string)
                     } else {
-                        return value as? NSURL
+                        return value as? Foundation.URL
                     }
                 }()
                 
                 if let URL = URL {
-                    let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
+                    let glyphRange = self.layoutManager.glyphRange(forCharacterRange: range, actualCharacterRange: nil)
                     ranges.append(LinkRange(URL: URL, glyphRange: glyphRange))
                     
                     // Remove `NSLinkAttributeName` to prevent `UILabel` from applying
                     // the default styling.
                     self.textStorage.removeAttribute(NSLinkAttributeName, range: range)
                     
-                    let originalAttributes = self.textStorage.attributesAtIndex(range.location, effectiveRange: nil)
+                    let originalAttributes = self.textStorage.attributes(at: range.location, effectiveRange: nil)
                     var proposedAttributes = originalAttributes
                     
                     if originalAttributes[NSForegroundColorAttributeName] == nil {
@@ -162,7 +162,7 @@ import UIKit
                         proposedAttributes[NSUnderlineStyleAttributeName] = DefaultLinkAttributes.UnderlineStyle.rawValue
                     }
                     
-                    let acceptedAttributes = self.delegate?.linkLabel?(self, attributesForURL: URL, originalAttributes: originalAttributes, proposedAttributes: proposedAttributes)
+                    let acceptedAttributes = self.delegate?.linkLabel?(self, attributesForURL: URL, originalAttributes: originalAttributes as [String : AnyObject], proposedAttributes: proposedAttributes as [String : AnyObject])
                         ?? proposedAttributes;
                     self.textStorage.setAttributes(acceptedAttributes, range: range)
                 }
@@ -174,8 +174,8 @@ import UIKit
     
     // MARK: Drawing
     
-    public override func drawRect(rect: CGRect) {
-        super.drawRect(rect)
+    open override func draw(_ rect: CGRect) {
+        super.draw(rect)
         
         if let linkRange = tappedLinkRange {
             linkHighlightColor.setFill()
@@ -186,10 +186,10 @@ import UIKit
         }
     }
     
-    private func highlightRectsForGlyphRange(range: NSRange) -> [CGRect] {
+    fileprivate func highlightRectsForGlyphRange(_ range: NSRange) -> [CGRect] {
         var rects = [CGRect]()
-        layoutManager.enumerateLineFragmentsForGlyphRange(range) { (_, rect, _, effectiveRange, _) in
-            let boundingRect = self.layoutManager.boundingRectForGlyphRange(NSIntersectionRange(range, effectiveRange), inTextContainer: self.textContainer)
+        layoutManager.enumerateLineFragments(forGlyphRange: range) { (_, rect, _, effectiveRange, _) in
+            let boundingRect = self.layoutManager.boundingRect(forGlyphRange: NSIntersectionRange(range, effectiveRange), in: self.textContainer)
             rects.append(boundingRect)
         }
         return rects
@@ -197,18 +197,18 @@ import UIKit
     
     // MARK: Touches
     
-    private func linkRangeAtPoint(point: CGPoint) -> LinkRange? {
+    fileprivate func linkRangeAtPoint(_ point: CGPoint) -> LinkRange? {
         if let linkRanges = linkRanges {
             // Passing in the UILabel's fitting size here doesn't work, the height
             // needs to be unrestricted for it to correctly lay out all the text.
             // Might be due to a difference in the computed text sizes of `UILabel`
             // and `NSLayoutManager`.
-            textContainer.size = CGSize(width: CGRectGetWidth(bounds), height: CGFloat.max)
-            layoutManager.ensureLayoutForTextContainer(textContainer)
-            let boundingRect = layoutManager.boundingRectForGlyphRange(layoutManager.glyphRangeForTextContainer(textContainer), inTextContainer: textContainer)
+            textContainer.size = CGSize(width: bounds.width, height: CGFloat.greatestFiniteMagnitude)
+            layoutManager.ensureLayout(for: textContainer)
+            let boundingRect = layoutManager.boundingRect(forGlyphRange: layoutManager.glyphRange(for: textContainer), in: textContainer)
             
             if boundingRect.contains(point) {
-                let glyphIndex = layoutManager.glyphIndexForPoint(point, inTextContainer: textContainer)
+                let glyphIndex = layoutManager.glyphIndex(for: point, in: textContainer)
                 for linkRange in linkRanges {
                     if NSLocationInRange(glyphIndex, linkRange.glyphRange) {
                         return linkRange
@@ -219,36 +219,36 @@ import UIKit
         return nil
     }
     
-    public override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
+    open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         // Any taps that don't hit a link are ignored and passed to the next 
         // responder.
         return linkRangeAtPoint(point) != nil
     }
     
-    public override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
-            tappedLinkRange = linkRangeAtPoint(touch.locationInView(self))
+            tappedLinkRange = linkRangeAtPoint(touch.location(in: self))
             setNeedsDisplay()
         }
     }
     
-    public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         tappedLinkRange = nil
         setNeedsDisplay()
     }
     
-    public override func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    open override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         tappedLinkRange = nil
         setNeedsDisplay()
     }
     
-    @objc private func handleTap(gestureRecognizer: UIGestureRecognizer) {
+    @objc fileprivate func handleTap(_ gestureRecognizer: UIGestureRecognizer) {
         if let linkRange = tappedLinkRange {
             delegate?.linkLabel?(self, didTapLinkWithURL: linkRange.URL)
         }
     }
     
-    @objc private func handleLongPress(gestureRecognizer: UIGestureRecognizer) {
+    @objc fileprivate func handleLongPress(_ gestureRecognizer: UIGestureRecognizer) {
         if let linkRange = tappedLinkRange {
             delegate?.linkLabel?(self, didLongPressLinkWithURL: linkRange.URL)
         }

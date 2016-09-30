@@ -14,8 +14,8 @@ class ViewController: UIViewController, INDLinkLabelDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let RTFPath = NSBundle.mainBundle().pathForResource("text", ofType: "rtf")!
-        let RTFData = NSData(contentsOfFile: RTFPath)!
+        let RTFPath = Bundle.main.path(forResource: "text", ofType: "rtf")!
+        let RTFData = try! Data(contentsOf: URL(fileURLWithPath: RTFPath))
         let options = [NSDocumentTypeDocumentAttribute: NSRTFTextDocumentType]
         
         label.numberOfLines = 0
@@ -29,12 +29,12 @@ class ViewController: UIViewController, INDLinkLabelDelegate {
     
     // MARK: INDLinkLabelDelegate
     
-    func linkLabel(label: INDLinkLabel, didLongPressLinkWithURL URL: NSURL) {
+    func linkLabel(_ label: INDLinkLabel, didLongPressLinkWithURL URL: Foundation.URL) {
         let activityController = UIActivityViewController(activityItems: [URL], applicationActivities: nil)
-        self.presentViewController(activityController, animated: true, completion: nil)
+        self.present(activityController, animated: true, completion: nil)
     }
     
-    func linkLabel(label: INDLinkLabel, didTapLinkWithURL URL: NSURL) {
-        UIApplication.sharedApplication().openURL(URL)
+    func linkLabel(_ label: INDLinkLabel, didTapLinkWithURL URL: Foundation.URL) {
+        UIApplication.shared.openURL(URL)
     }
 }
