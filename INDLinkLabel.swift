@@ -31,7 +31,7 @@ import UIKit
     
     /// Called when a link is long pressed.
     @objc optional func linkLabel(_ label: INDLinkLabel, didLongPressLinkWithURL URL: URL)
-
+    
     /// Called when parsing links from attributed text.
     /// The delegate may determine whether to use the text's original attributes,
     /// use the proposed INDLinkLabel attributes (blue text color, and underlined),
@@ -39,7 +39,7 @@ import UIKit
     @objc optional func linkLabel(_ label: INDLinkLabel, attributesForURL URL: URL, originalAttributes: [String: AnyObject], proposedAttributes: [String: AnyObject]) -> [String: AnyObject]
 }
 
-/// A simple UILabel subclass that allows for tapping and long pressing on links 
+/// A simple UILabel subclass that allows for tapping and long pressing on links
 /// (i.e. anything marked with `NSLinkAttributeName`)
 @IBDesignable open class INDLinkLabel: UILabel {
     @IBOutlet open weak var delegate: INDLinkLabelDelegate?
@@ -89,7 +89,11 @@ import UIKit
     }
     
     fileprivate var linkRanges: [LinkRange]?
-    fileprivate var tappedLinkRange: LinkRange?
+    fileprivate var tappedLinkRange: LinkRange? {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
     
     // MARK: Initialization
     
@@ -128,7 +132,7 @@ import UIKit
         static let Color = UIColor.blue
         static let UnderlineStyle = NSUnderlineStyle.styleSingle
     }
-
+    
     fileprivate func processLinks() {
         var ranges = [LinkRange]()
         if let attributedText = attributedText {
@@ -220,35 +224,33 @@ import UIKit
     }
     
     open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        // Any taps that don't hit a link are ignored and passed to the next 
+        // Any taps that don't hit a link are ignored and passed to the next
         // responder.
         return linkRangeAtPoint(point) != nil
     }
     
-    open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            tappedLinkRange = linkRangeAtPoint(touch.location(in: self))
-            setNeedsDisplay()
-        }
-    }
-    
-    open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        tappedLinkRange = nil
-        setNeedsDisplay()
-    }
-    
-    open override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        tappedLinkRange = nil
-        setNeedsDisplay()
-    }
-    
     @objc fileprivate func handleTap(_ gestureRecognizer: UIGestureRecognizer) {
+        switch gestureRecognizer.state {
+        case .ended:
+            tappedLinkRange = linkRangeAtPoint(gestureRecognizer.location(ofTouch: 0, in: self))
+        default:
+            tappedLinkRange = nil
+        }
+        
         if let linkRange = tappedLinkRange {
             delegate?.linkLabel?(self, didTapLinkWithURL: linkRange.URL)
+            tappedLinkRange = nil
         }
     }
     
     @objc fileprivate func handleLongPress(_ gestureRecognizer: UIGestureRecognizer) {
+        switch gestureRecognizer.state {
+        case .began:
+            tappedLinkRange = linkRangeAtPoint(gestureRecognizer.location(ofTouch: 0, in: self))
+        default:
+            tappedLinkRange = nil
+        }
+        
         if let linkRange = tappedLinkRange {
             delegate?.linkLabel?(self, didLongPressLinkWithURL: linkRange.URL)
         }
